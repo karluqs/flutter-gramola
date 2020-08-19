@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_flux/flutter_flux.dart';
 import 'package:fluro/fluro.dart';
-import 'package:fh_sdk/fh_sdk.dart';
 
 import 'package:gramola/config/application.dart';
 import 'package:gramola/config/routes.dart';
@@ -11,14 +10,12 @@ import 'package:gramola/config/stores.dart';
 import 'package:gramola/config/theme.dart';
 
 class AppComponent extends StatefulWidget {
-
   @override
   State createState() => new AppComponentState();
 }
 
-class AppComponentState extends State<AppComponent> 
-            with StoreWatcherMixin<AppComponent> {
-
+class AppComponentState extends State<AppComponent>
+    with StoreWatcherMixin<AppComponent> {
   // Never write to these stores directly. Use Actions.
   InitStore initStore;
   EventsStore eventsStore;
@@ -30,24 +27,23 @@ class AppComponentState extends State<AppComponent>
   }
 
   // This method takes care of push notifications
-  void notificationHandler (MethodCall call) {
+  void notificationHandler(MethodCall call) {
     assert(call != null);
     if ('push_message_received' == call.method) {
-        print ('push_message_received ' + call.toString());
-        if (call.arguments != null && call.arguments['userInfo'] != null) {
-          var userInfo = call.arguments['userInfo'];
-          print(userInfo['aps']['alert']['body']);
-        } else {
-          print(call.toString());
-        }
+      print('push_message_received ' + call.toString());
+      if (call.arguments != null && call.arguments['userInfo'] != null) {
+        var userInfo = call.arguments['userInfo'];
+        print(userInfo['aps']['alert']['body']);
+      } else {
+        print(call.toString());
       }
+    }
   }
 
   // Initialize plugin this allows us to receive push notification messages
   initPlugin() async {
     try {
       initPluginRequestAction('');
-      FhSdk.initialize(notificationHandler);
       initPluginSuccessAction('plugin channel ready');
     } on PlatformException catch (e) {
       initPluginFailureAction(e.message);
@@ -59,7 +55,6 @@ class AppComponentState extends State<AppComponent>
     String result;
     try {
       initSdkRequestAction('');
-      result = await FhSdk.init();
       initSdkSuccessAction(result);
     } on PlatformException catch (e) {
       initSdkFailureAction(e.message);
@@ -91,8 +86,8 @@ class AppComponentState extends State<AppComponent>
   void handleEventStoreChanged(Store store) {
     EventsStore eventStore = store;
     if (eventStore.currentEvent == null) {
-        // Cleaning
-        print('>>>> Sample store-changed handler');
+      // Cleaning
+      print('>>>> Sample store-changed handler');
     }
     setState(() {});
   }
@@ -109,4 +104,3 @@ class AppComponentState extends State<AppComponent>
     return app;
   }
 }
-
